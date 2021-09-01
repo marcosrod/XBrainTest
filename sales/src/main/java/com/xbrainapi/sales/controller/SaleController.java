@@ -2,11 +2,14 @@ package com.xbrainapi.sales.controller;
 
 
 import com.xbrainapi.sales.model.Sale;
+import com.xbrainapi.sales.model.SellerReport;
 import com.xbrainapi.sales.repository.SaleRepository;
+import com.xbrainapi.sales.service.SalesReportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -17,11 +20,13 @@ public class SaleController {
 
     private SellerController sellerController;
     private SaleRepository saleRepository;
+    private SalesReportService salesReportService;
 
-    public SaleController(SaleRepository saleRepository, SellerController sellerController){
+    public SaleController(SaleRepository saleRepository, SellerController sellerController, SalesReportService salesReportService){
         super();
         this.saleRepository = saleRepository;
         this.sellerController = sellerController;
+        this.salesReportService = salesReportService;
     }
 
     @PostMapping
@@ -68,5 +73,14 @@ public class SaleController {
                     Sale saleUpdated = saleRepository.save(sale);
                     return ResponseEntity.ok().body(saleUpdated);
                 }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(path = "/report/{dateStart}/{dateEnd}")
+    public ResponseEntity<List<SellerReport>> getSellersReport(@PathVariable Date dateStart, @PathVariable Date dateEnd){
+        try{
+            return ResponseEntity.ok().body(salesReportService.getSellersReport(saleRepository.findAllByDateBetween(dateStart, dateEnd), dateStart, dateEnd));
+        }catch (NoSuchElementException nsee){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
