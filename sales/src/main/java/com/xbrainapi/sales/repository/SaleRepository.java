@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Integer> {
 
+    //Method to find the Sales between a certain date interval
     List<Sale> findAllByDateBetween(
             Date saleDateStart,
             Date saleDateEnd

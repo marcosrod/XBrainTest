@@ -1,18 +1,18 @@
 package com.xbrainapi.sales.model;
 
 
-public class SellerReport {
+public class SaleReport {
 
     private String name;
     private int salesTotal;
     private double dailySalesAverage;
 
 
-    public SellerReport(){
+    public SaleReport(){
 
     }
 
-    public SellerReport(String name, int salesTotal, double dailySalesAverage){
+    public SaleReport(String name, int salesTotal, double dailySalesAverage){
         this.name = name;
         this.salesTotal = salesTotal;
         this.dailySalesAverage = dailySalesAverage;

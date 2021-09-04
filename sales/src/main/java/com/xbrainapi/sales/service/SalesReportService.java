@@ -1,7 +1,7 @@
 package com.xbrainapi.sales.service;
 
 import com.xbrainapi.sales.model.Sale;
-import com.xbrainapi.sales.model.SellerReport;
+import com.xbrainapi.sales.model.SaleReport;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -13,12 +13,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SalesReportService {
 
-    public List<SellerReport> getSellersReport(List<Sale> sales, Date dateStart, Date dateEnd){
+    //Method to organize and fill up the entire Sales Report
+    public List<SaleReport> getSalesReport(List<Sale> sales, Date dateStart, Date dateEnd){
         int sellersCount = 0;
         int i;
         int j;
         List<Integer> idList = new ArrayList<>();
-        List<SellerReport> report;
+        List<SaleReport> report;
         report = new ArrayList<>();
 
         for(i = 0; i < sales.size(); i++){
@@ -36,28 +37,29 @@ public class SalesReportService {
         Collections.sort(idList);
 
         for(i = 0; i < idList.size(); i++){
-            report.add(setSellerReport(idList.get(i), sales, dateStart, dateEnd));
+            report.add(setSaleReport(idList.get(i), sales, dateStart, dateEnd));
         }
 
         return report;
     }
 
-    private SellerReport setSellerReport(int id, List<Sale> sales, Date dateStart, Date dateEnd){
-        SellerReport sellerReport = new SellerReport();
+    //Method to fill up a Sale for the Report
+    private SaleReport setSaleReport(int id, List<Sale> sales, Date dateStart, Date dateEnd){
+        SaleReport saleReport = new SaleReport();
         int i;
         for(i = 0; i < sales.size(); i++){
             if(sales.get(i).getSellerId() == id){
-                if(sellerReport.getSalesTotal() == 0){
-                    sellerReport.setName(sales.get(i).getSellerName());
+                if(saleReport.getSalesTotal() == 0){
+                    saleReport.setName(sales.get(i).getSellerName());
                 }
-                sellerReport.setSalesTotal(sellerReport.getSalesTotal()+1);
+                saleReport.setSalesTotal(saleReport.getSalesTotal()+1);
             }
         }
 
         long diff = dateEnd.getTime() - dateStart.getTime();
         double daysTotal = (double) (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) + 1;
-        sellerReport.setDailySalesAverage(sellerReport.getSalesTotal()/daysTotal);
+        saleReport.setDailySalesAverage(saleReport.getSalesTotal()/daysTotal);
 
-        return sellerReport;
+        return saleReport;
     }
 }

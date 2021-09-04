@@ -20,12 +20,14 @@ public class SellerController {
         this.sellerRepository = sellerRepository;
     }
 
+    //Post Method to save a new Seller
     @PostMapping
     public ResponseEntity<Seller> saveSeller(@RequestBody Seller seller){
         sellerRepository.save(seller);
         return new ResponseEntity<>(seller, HttpStatus.OK);
     }
 
+    //Get Method to get a created Seller by it's id
     @GetMapping(path = "/{id}")
     public ResponseEntity<Optional<Seller>> getSellerById(@PathVariable Integer id) {
         try {
